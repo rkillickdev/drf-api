@@ -63,9 +63,8 @@ DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
     '8000-rkillickdev-drfapi-fm9j8zb6pne.ws-eu106.gitpod.io',
-
+    'rkdev-drf-api-3511a67bfcda.herokuapp.com'
 ]
-
 
 # Application definition
 
