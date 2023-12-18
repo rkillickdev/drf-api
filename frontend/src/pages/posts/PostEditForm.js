@@ -15,17 +15,15 @@ import btnStyles from "../../styles/Button.module.css";
 import { useHistory, useParams } from "react-router";
 import { axiosReq } from "../../api/axiosDefaults";
 
-
 function PostEditForm() {
   const [errors, setErrors] = useState({});
 
-  const[postData, setPostData] = useState({
+  const [postData, setPostData] = useState({
     title: "",
     content: "",
     image: "",
   });
-
-  const{title, content, image} = postData;
+  const { title, content, image } = postData;
 
   const imageInput = useRef(null);
   const history = useHistory();
@@ -33,17 +31,18 @@ function PostEditForm() {
 
   useEffect(() => {
     const handleMount = async () => {
-			try {
-				const { data } = await axiosReq.get(`/posts/${id}/`);
-				const { title, content, image, is_owner } = data;
+      try {
+        const { data } = await axiosReq.get(`/posts/${id}/`);
+        const { title, content, image, is_owner } = data;
 
-				is_owner ? setPostData({ title, content, image }) : history.push("/");
-			} catch(err) {
-				// console.log(err);
-			}
+        is_owner ? setPostData({ title, content, image }) : history.push("/");
+      } catch (err) {
+        // console.log(err);
+      }
     };
-		handleMount();
-  }, [history, id])
+
+    handleMount();
+  }, [history, id]);
 
   const handleChange = (event) => {
     setPostData({
@@ -53,33 +52,33 @@ function PostEditForm() {
   };
 
   const handleChangeImage = (event) => {
-    if (event.target.files.length){
+    if (event.target.files.length) {
       URL.revokeObjectURL(image);
       setPostData({
         ...postData,
         image: URL.createObjectURL(event.target.files[0]),
-      })
+      });
     }
-  }
+  };
 
-  const handleSubmit =  async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
 
     formData.append("title", title);
     formData.append("content", content);
 
-		if (imageInput?.current?.files[0]) {
-			formData.append("image", imageInput.current.files[0]);
-		}
+    if (imageInput?.current?.files[0]) {
+      formData.append("image", imageInput.current.files[0]);
+    }
 
     try {
       await axiosReq.put(`/posts/${id}/`, formData);
-      history.push(`/posts/${id}`)
-    } catch(err) {
-      // console.log(err)
-      if (err.response?.status !== 401){
-        setErrors(err.response?.data)
+      history.push(`/posts/${id}`);
+    } catch (err) {
+      // console.log(err);
+      if (err.response?.status !== 401) {
+        setErrors(err.response?.data);
       }
     }
   };
@@ -87,34 +86,36 @@ function PostEditForm() {
   const textFields = (
     <div className="text-center">
       <Form.Group>
-        <Form.Label >Title</Form.Label>
-          <Form.Control
-            type="text"
-            name="title"
-            value={title}
-            onChange={handleChange}
-          />
+        <Form.Label>Title</Form.Label>
+        <Form.Control
+          type="text"
+          name="title"
+          value={title}
+          onChange={handleChange}
+        />
       </Form.Group>
-      {errors.title?.map((message, idx) => (
+      {errors?.title?.map((message, idx) => (
         <Alert variant="warning" key={idx}>
           {message}
         </Alert>
       ))}
+
       <Form.Group>
-        <Form.Label >Content</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={6}
-            name="content"
-            value={content}
-            onChange={handleChange} 
-          />
+        <Form.Label>Content</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={6}
+          name="content"
+          value={content}
+          onChange={handleChange}
+        />
       </Form.Group>
-      {errors.content?.map((message, idx) => (
+      {errors?.content?.map((message, idx) => (
         <Alert variant="warning" key={idx}>
           {message}
         </Alert>
       ))}
+
       <Button
         className={`${btnStyles.Button} ${btnStyles.Blue}`}
         onClick={() => history.goBack()}
@@ -122,7 +123,7 @@ function PostEditForm() {
         cancel
       </Button>
       <Button className={`${btnStyles.Button} ${btnStyles.Blue}`} type="submit">
-        Save
+        save
       </Button>
     </div>
   );
@@ -135,18 +136,18 @@ function PostEditForm() {
             className={`${appStyles.Content} ${styles.Container} d-flex flex-column justify-content-center`}
           >
             <Form.Group className="text-center">
-							<figure>
-								<Image className={appStyles.Image} src={image} rounded />
-							</figure>
-							<div>
-								<Form.Label
-									className={`${btnStyles.Button} ${btnStyles.Blue} btn`}
-									htmlFor="image-upload"
-								>
-									Change the image
-								</Form.Label>
-							</div>
-              
+              <figure>
+                <Image className={appStyles.Image} src={image} rounded />
+              </figure>
+              <div>
+                <Form.Label
+                  className={`${btnStyles.Button} ${btnStyles.Blue} btn`}
+                  htmlFor="image-upload"
+                >
+                  Change the image
+                </Form.Label>
+              </div>
+
               <Form.File
                 id="image-upload"
                 accept="image/*"
@@ -154,11 +155,12 @@ function PostEditForm() {
                 ref={imageInput}
               />
             </Form.Group>
-            {errors.image?.map((message, idx) => (
+            {errors?.image?.map((message, idx) => (
               <Alert variant="warning" key={idx}>
                 {message}
               </Alert>
             ))}
+
             <div className="d-md-none">{textFields}</div>
           </Container>
         </Col>
